@@ -4,7 +4,7 @@ import Map from "../components/Map";
 
 function MainMap() {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyA9iKQ-4RSE5CEfFTbZVm3v8441C2yudbA",
+    googleMapsApiKey: import.meta.env.VITE_GOOGLEMAPSREACT_API,
     libraries: ["places"],
   });
 
