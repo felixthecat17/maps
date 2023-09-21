@@ -1,5 +1,5 @@
 import { GoogleMap, Marker, DirectionsRenderer } from "@react-google-maps/api";
-import { useState, useMemo, useRef, useCallback, useEffect } from "react";
+import { useState, useMemo, useRef, useCallback } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBarsStaggered } from "@fortawesome/free-solid-svg-icons";
 import Places from "./Places";
@@ -55,13 +55,12 @@ function Map() {
     );
   };
   /*geolocation*/
-  const { coords, isGeolocationAvailable, isGeolocationEnabled } =
-    useGeolocated({
-      positionOptions: {
-        enableHighAccuracy: false,
-      },
-      userDecisionTimeout: 5000,
-    });
+  const { coords } = useGeolocated({
+    positionOptions: {
+      enableHighAccuracy: false,
+    },
+    userDecisionTimeout: 5000,
+  });
 
   return (
     <>
