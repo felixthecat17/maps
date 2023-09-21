@@ -42,7 +42,8 @@ body {
   }
 
   
-.controls[data-toggle="true"] .search-container {
+.controls[data-toggle="true"] .search-container,
+.controls[data-toggle="true"] .results-container {
     display: none;
 }
 
@@ -62,6 +63,19 @@ body {
     list-style: none;
   }
 
+  .results-container {
+    /* margin-top: 10px; */
+    display: flex;
+    flex-direction: column;
+  }
+  .label {
+    font-size: 20px;
+    margin: 15px 0;
+  }
+  .route-info {
+    margin: 0;
+    font-size: 18px;
+  }
   
 @media only screen and (max-width: 566px) {
     .controls {

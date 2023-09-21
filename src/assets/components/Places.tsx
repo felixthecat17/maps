@@ -12,14 +12,14 @@ import {
 import "@reach/combobox/styles.css";
 
 type PlacesProps = {
-  setOffice: (position: google.maps.LatLngLiteral) => void;
+  setOffice: (position: google.maps.LatLngLiteral, location: string) => void;
 };
 
 export default function Places({ setOffice }: PlacesProps) {
   const {
     ready,
-    value,
     setValue,
+    value,
     suggestions: { status, data },
     clearSuggestions,
   } = usePlacesAutocomplete();
@@ -30,7 +30,7 @@ export default function Places({ setOffice }: PlacesProps) {
 
     const results = await getGeocode({ address: val });
     const { lat, lng } = await getLatLng(results[0]);
-    setOffice({ lat, lng });
+    setOffice({ lat, lng }, val);
   };
 
   return (
@@ -40,7 +40,7 @@ export default function Places({ setOffice }: PlacesProps) {
         onChange={(e) => setValue(e.target.value)}
         className="combobox-input"
         disabled={!ready}
-        placeholder="Search an Address"
+        placeholder="Type an address"
       />
       <ComboboxPopover>
         <ComboboxList>

@@ -1,5 +1,5 @@
 {
-  "homepage":"https://felixthecat17.github.io/maps",
+  "homepage": "https://felixthecat17.github.io/maps",
   "name": "googlemapsreact",
   "private": true,
   "version": "0.0.0",
@@ -21,6 +21,7 @@
     "axios": "^1.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-geolocated": "^4.1.2",
     "use-places-autocomplete": "^4.0.1"
   },
   "devDependencies": {

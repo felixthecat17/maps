@@ -1,8 +1,9 @@
 import { GoogleMap, Marker, DirectionsRenderer } from "@react-google-maps/api";
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBarsStaggered } from "@fortawesome/free-solid-svg-icons";
 import Places from "./Places";
+import { useGeolocated } from "react-geolocated";
 
 type LatLngLiteral = google.maps.LatLngLiteral;
 type DirectionsResult = google.maps.DirectionsResult;
@@ -20,7 +21,6 @@ function Map() {
     []
   );
   const onLoad = useCallback((map: any) => (mapRef.current = map), []);
-
   /** for the controls  */
 
   const [controlClass, setControlClass] = useState(false);
@@ -31,6 +31,9 @@ function Map() {
 
   const [office, setOffice] = useState<google.maps.LatLngLiteral>();
   const [destination, setDestination] = useState<google.maps.LatLngLiteral>();
+
+  const [fromValue, setFromValue] = useState<string>();
+  const [toValue, setToValue] = useState<string>();
 
   const LoadRoutes = (to: LatLngLiteral) => {
     if (!office) return;
@@ -46,26 +49,37 @@ function Map() {
         if (status === "OK" && result) {
           console.log(result);
           setDirections(result);
+          setControlClass(controlClass === true ? false : true);
         }
       }
     );
   };
+  /*geolocation*/
+  const { coords, isGeolocationAvailable, isGeolocationEnabled } =
+    useGeolocated({
+      positionOptions: {
+        enableHighAccuracy: false,
+      },
+      userDecisionTimeout: 5000,
+    });
 
   return (
     <>
       <div className="map">
         <GoogleMap
           onClick={(e) => {
-            if (office) {
-              const lat = e.latLng?.lat();
-              const lng = e.latLng?.lng();
+            const lat = e.latLng?.lat();
+            const lng = e.latLng?.lng();
 
-              if (lat && lng) {
+            if (lat && lng) {
+              if (!office) {
+                setOffice({ lat, lng });
+                setFromValue("Clicked somewhere in the map");
+              } else {
                 setDestination({ lat, lng });
+                setToValue("Clicked somewhere in the map");
                 LoadRoutes({ lat, lng });
               }
-            } else {
-              console.log("click first");
             }
           }}
           zoom={10}
@@ -97,11 +111,46 @@ function Map() {
         </div>
         <div className="search-container">
           <Places
-            setOffice={(position) => {
+            setOffice={(position, value) => {
               setOffice(position);
+              console.log(position);
               mapRef.current?.panTo(position);
+              if (position) {
+                setFromValue(value);
+              }
             }}
           />
+        </div>
+        <div className="results-container">
+          <span className="label">
+            Search or click/tap on the map to set routes.
+          </span>
+
+          <p className="route-info">
+            From:&nbsp;
+            {fromValue ? (
+              fromValue
+            ) : (
+              <button
+                onClick={() => {
+                  if (coords) {
+                    let currentLocation: LatLngLiteral;
+                    currentLocation = {
+                      lat: coords.latitude,
+                      lng: coords.longitude,
+                    };
+
+                    setOffice(currentLocation);
+                    setFromValue("Current location");
+                    mapRef.current?.panTo(currentLocation);
+                  }
+                }}
+              >
+                Use location?
+              </button>
+            )}
+          </p>
+          {toValue && <p className="route-info">To:&nbsp;{toValue}</p>}
         </div>
       </div>
     </>
